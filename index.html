@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Data Visualization with D3.js</title>
+    <!-- Include D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="data.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<h1>Composer Data Visualization</h1>
+
+<style>
+/* Style for the filter input */
+#filterInput {
+    margin-bottom: 10px;
+    padding: 5px;
+    width: 200px;
+}
+
+/* Style for the table */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Стили для контейнера фильтров */
+#filterSection {
+    margin-bottom: 20px;
+    display: inline-block;
+}
+
+/* Стили для выпадающего списка с национальностью */
+#nationalitySelect {
+    margin-right: 10px;
+}
+
+/* Стили для поля ввода года */
+input[type="number"] {
+    width: 80px;
+    margin-right: 10px;
+}
+
+/* Стили для кнопки применения фильтра */
+#applyFilterBtn {
+    background-color: #007bff;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+#applyFilterBtn:hover {
+    background-color: #0056b3;
+}
+
+.title {
+    font-weight: bold;
+}
+
+svg text {
+    font: 8px Verdana;
+}
+
+svg path, line {
+    fill: none;
+    stroke: #333333;
+}
+</style>
+
+<body>
+<!-- Filter Section -->
+<div id="filterSection">
+    <span class="title">Поиск</span>
+    <label for="composers">Имя композитора:</label>
+    <input type="text" id="composers">
+    <label for="nationalitySelect">Национальность:</label>
+    <select id="nationalitySelect"></select>
+    <label>Годы жизни:</label>
+    <label for="minYearInput">от</label>
+    <input type="number" id="minYearInput" min="0">
+    <label for="maxYearInput">до</label>
+    <input type="number" id="maxYearInput" min="0">
+    <button id="applyFilterBtn" onclick="filterData()">Найти</button>
+    <button id="clearFilterBtn" onclick="clearTable()">Очистить</button>
+</div>
+
+<!-- Sort Section -->
+<form id="sortForm">
+    <span class="title">Сортировка</span>
+    <label for="sortSelect1">Сортировка 1:</label>
+    <select id="sortSelect1" name="sort1" class="sortSelect"></select>
+    <label>
+        <input type="checkbox" name="sort1">
+        по убыванию
+    </label>
+    <label for="sortSelect2">Сортировка 2:</label>
+    <select id="sortSelect2" name="sort2" class="sortSelect"></select>
+    <label>
+        <input type="checkbox" name="sort2">
+        по убыванию
+    </label>
+    <label for="sortSelect3">Сортировка 3:</label>
+    <select id="sortSelect3" name="sort3" class="sortSelect"></select>
+    <label>
+        <input type="checkbox" name="sort3">
+        по убыванию
+    </label>
+    <button type="submit" id="applySortBtn">Применить</button>
+    <button id="clearSortBtn" onclick="clearTable()">Сбросить</button>
+</form>
+
+<!-- Group Section -->
+<div id="groupSection">
+    <span class="title">График</span>
+    <span>Группировать по столбцу: Nationality</span>
+    <label>Значения из столбца:
+        <select id="groupSelect">
+            <option>Born</option>
+            <option>Died</option>
+            <option>Duration of Biggest Piece(mins)</option>
+        </select>
+    </label>
+    <button id="applyGroupBtn" onclick="groupData()">Применить</button>
+    <button id="clearGroupBtn" onclick="clearTable()">Сбросить</button>
+</div>
+
+<svg id="graph_svg"></svg>
+
+<div id="data_display"></div>
+</body>
+
+<script src="/script.js"></script>
+
+</html>

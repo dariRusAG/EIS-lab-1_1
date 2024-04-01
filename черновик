@@ -1,0 +1,189 @@
+
+            <!-- Filter Section -->
+    <div>
+        <label for="composerSelect">Select Composer:</label>
+        <select id="composerSelect"></select>
+        <br>
+        <label for="minYearInput">Min Year:</label>
+        <input type="number" id="minYearInput" min="0">
+        <label for="maxYearInput">Max Year:</label>
+        <input type="number" id="maxYearInput" min="0">
+        <button onclick="filterData()">Apply Filter</button>
+    </div>
+
+    // var composersData = "";
+
+    // // Populate composer dropdown
+    // var composerSelect = d3.select("#composerSelect");
+    // composerSelect.selectAll("option")
+    //     .data(composersData)
+    //     .enter()
+    //     .append("option")
+    //     .text(function(d) { return d.name; });
+
+    // // Function to filter data
+    // function filterData() {
+    //     var selectedComposer = composerSelect.node().value;
+    //     var minYear = parseInt(document.getElementById("minYearInput").value);
+    //     var maxYear = parseInt(document.getElementById("maxYearInput").value);
+
+    //     // Filter data based on selected composer and year range
+    //     var filteredData = composersData.filter(function(d) {
+    //         return (selectedComposer === "" || d.name === selectedComposer) &&
+    //                (isNaN(minYear) || d.birthYear >= minYear) &&
+    //                (isNaN(maxYear) || d.deathYear <= maxYear);
+    //     });
+
+    //     // Update visualization with filtered data
+    //     updateVisualization(filteredData);
+    // }
+
+    // // Function to update visualization
+    // function updateVisualization(data) {
+    //     // Clear existing visualization
+    //     d3.select("#visualization").selectAll("*").remove();
+
+    //     // Create new visualization (for demonstration, just listing filtered data)
+    //     var visualization = d3.select("#visualization");
+    //     var list = visualization.append("ul");
+    //     var items = list.selectAll("li")
+    //         .data(data)
+    //         .enter()
+    //         .append("li")
+    //         .text(function(d) { return d.name + " (" + d.birthYear + " - " + d.deathYear + ")"; });
+    // }
+
+    // // Initial visualization with unfiltered data
+    // updateVisualization(composersData);
+
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Composer Data Filter</title>
+    <!-- Include D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <h1>Composer Data Filter</h1>
+
+    <!-- Filter Section -->
+    <div>
+        <label for="nationalitySelect">Select Nationality:</label>
+        <select id="nationalitySelect">
+            <option value="">All</option>
+            <option value="German">German</option>
+            <option value="Austrian">Austrian</option>
+            <!-- Add more nationalities as needed -->
+        </select>
+        <br>
+        <label for="minYearInput">Min Year:</label>
+        <input type="number" id="minYearInput" min="0">
+        <label for="maxYearInput">Max Year:</label>
+        <input type="number" id="maxYearInput" min="0">
+        <button onclick="filterData()">Apply Filter</button>
+    </div>
+
+    <!-- Filtered Data Display -->
+    <div id="filteredDataDisplay"></div>
+
+    <script>
+        // Sample data
+        var data = [
+            { Composer: "Ludwig van Beethoven", Nationality: "German", Born: 1770, Died: 1791, "Biggest Piece": "Symphony No. 9", "Duration of Biggest Piece(mins)": 65 },
+            { Composer: "Wolfgang Amadeus Mozart", Nationality: "Austrian", Born: 1756, Died: 1791, "Biggest Piece": "Symphony No. 41", "Duration of Biggest Piece(mins)": 33 },
+            // Add more data as needed
+        ];
+
+        // Function to filter data
+        function filterData() {
+            var nationality = document.getElementById("nationalitySelect").value;
+            var minYear = parseInt(document.getElementById("minYearInput").value);
+            var maxYear = parseInt(document.getElementById("maxYearInput").value);
+
+            var filteredData = data.filter(function(d) {
+                return (nationality === "" || d.Nationality === nationality) &&
+                       (isNaN(minYear) || d.Born >= minYear) &&
+                       (isNaN(maxYear) || d.Died <= maxYear);
+            });
+
+            displayFilteredData(filteredData);
+        }
+
+        // Function to display filtered data
+        function displayFilteredData(filteredData) {
+            var container = d3.select("#filteredDataDisplay");
+            container.html(""); // Clear previous content
+
+            var table = container.append("table");
+
+            var thead = table.append("thead").append("tr");
+            thead.selectAll("th")
+                .data(Object.keys(filteredData[0]))
+                .enter()
+                .append("th")
+                .text(function(d) { return d; });
+
+            var tbody = table.append("tbody");
+            var rows = tbody.selectAll("tr")
+                .data(filteredData)
+                .enter()
+                .append("tr");
+
+            rows.each(function(d) {
+                var row = d3.select(this);
+                Object.values(d).forEach(function(value) {
+                    row.append("td").text(value);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
+
+<div id="filterSection">
+    <label for="composerSelect">Select Composer:</label>
+    <select id="composerSelect">
+        <option value="">All</option>
+    </select>
+    <label for="minYearInput">Min Year:</label>
+    <input type="number" id="minYearInput" min="0">
+    <label for="maxYearInput">Max Year:</label>
+    <input type="number" id="maxYearInput" min="0">
+    <button id="applyFilterBtn" onclick="filterData()">Apply Filter</button>
+</div>
+
+<!-- Filtered Data Display -->
+<div id="filteredDataDisplay"></div>
+
+<!-- Data display -->
+<div id="data_display"></div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+    // Загружаем JSON-файл с помощью d3.json()
+    d3.json('composers.json').then(function(data) {
+        // Получаем массив всех композиторов
+        var composers = data.map(function(d) {
+            return d.Composer;
+        });
+
+        // Используем d3.set() для получения уникальных значений
+        var uniqueComposers = d3.set(composers).values();
+
+        // Выбираем элемент <select> и добавляем опции
+        d3.select("#composerSelect")
+            .selectAll("option")
+            .data(uniqueComposers)
+            .enter()
+            .append("option")
+            .attr("value", function(d) { return d; })
+            .text(function(d) { return d; });
+    });
+
+    // Функция для фильтрации данных (не включена в пример)
+    function filterData() {
+        // Ваш код фильтрации данных
+    }
+</script>
